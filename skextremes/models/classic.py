@@ -523,7 +523,7 @@ class GEV(_Base):
         loc = self.loc
         scale = self.scale
         hess = _ndt.Hessian(self._nnlf)
-        T = _np.arange(0.1, 500.1, 0.1)
+        T = _np.arange(2., 500.1, 0.1)
         sT = -_np.log(1.-self.frec/T)
         sT2 = self.distr.isf(self.frec/T)
         
