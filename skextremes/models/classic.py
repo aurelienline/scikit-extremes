@@ -519,7 +519,9 @@ class GEV(_Base):
         #     - https://en.wikipedia.org/wiki/Delta_method
         
         # data
-        c  = -self.c    # We negate the shape to avoid inconsistency problems!?
+        c  = self.c
+        # PREVIOUSLY: 'We negate the shape to avoid inconsistency problems!?'
+        # NOW: change 'c' for '-c' in the varcovar calculation only (see HERE).
         loc = self.loc
         scale = self.scale
         hess = _ndt.Hessian(self._nnlf)
@@ -532,7 +534,7 @@ class GEV(_Base):
         ci_Tu = _np.zeros(sT.shape)
         ci_Td = _np.zeros(sT.shape)
         if c:         # If c then we are calculating GEV confidence intervals
-            varcovar = _np.linalg.inv(hess([c, loc, scale]))
+            varcovar = _np.linalg.inv(hess([-c, loc, scale]))   # HERE
             self.params_ci = OrderedDict()
             se = _np.sqrt(_np.diag(varcovar))
             self._se = se
