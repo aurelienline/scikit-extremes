@@ -568,6 +568,7 @@ class GEV(_Base):
                 ci_Td[i] = val - _st.norm.ppf(1 - self.ci / 2) * _np.sqrt(se)
         self._ci_Tu = ci_Tu
         self._ci_Td = ci_Td
+        self.varcovar = varcovar
     
     def _ci_bootstrap(self):
         # Calculate confidence intervals using parametric bootstrap and the
