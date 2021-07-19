@@ -448,7 +448,7 @@ class GEV(_Base):
             # For the shape parameter the value provided by scipy 
             # is defined as negative as that obtained from other
             # packages in R, some textbooks, wikipedia,... ¿?
-            self.params["shape"]    = _params[0]
+            self.params["shape"]    = - _params[0]  ###
             self.params["location"] = _params[1]
             self.params["scale"]    = _params[2]
         
