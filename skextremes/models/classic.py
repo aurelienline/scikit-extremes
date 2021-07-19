@@ -475,7 +475,7 @@ class GEV(_Base):
         self.c     = self.params['shape']      # shape
         self.loc   = self.params['location']   # location
         self.scale = self.params['scale']      # scale
-        self.distr = _st.genextreme(self.c,     # frozen distribution
+        self.distr = _st.genextreme(- self.c,     # frozen distribution
                                    loc = self.loc, 
                                    scale = self.scale)
                                    
