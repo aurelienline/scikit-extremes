@@ -497,8 +497,9 @@ class GEV(_Base):
             loc = theta[0]
             scale = theta[1]
         if c != 0:
-            expr = 1. + c * ((x - loc) / scale)
-            return (len(x) * _np.log(scale) + 
+            tmp = 1. + c * ((x - loc) / scale)  ###
+            expr = tmp[tmp > 0.]                ###
+            return (len(expr) * _np.log(scale) + 
                    (1. + 1. / c) * _np.sum(_np.log(expr)) +
                    _np.sum(expr ** (-1. / c)))
         else:
