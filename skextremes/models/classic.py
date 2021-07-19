@@ -521,8 +521,7 @@ class GEV(_Base):
         
         # data
         c  = self.c
-        # PREVIOUSLY: 'We negate the shape to avoid inconsistency problems!?'
-        # NOW: change 'c' for '-c' in the varcovar calculation only (see HERE).
+        # PREVIOUSLY: c = -self.c 'We negate the shape to avoid inconsistency problems!?'
         loc = self.loc
         scale = self.scale
         hess = _ndt.Hessian(self._nnlf)
@@ -535,7 +534,7 @@ class GEV(_Base):
         ci_Tu = _np.zeros(sT.shape)
         ci_Td = _np.zeros(sT.shape)
         if c:         # If c then we are calculating GEV confidence intervals
-            varcovar = _np.linalg.inv(hess([c, loc, scale]))   # HERE
+            varcovar = _np.linalg.inv(hess([c, loc, scale]))
             self.params_ci = OrderedDict()
             se = _np.sqrt(_np.diag(varcovar))
             self._se = se
