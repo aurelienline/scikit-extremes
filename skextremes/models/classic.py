@@ -459,7 +459,7 @@ class GEV(_Base):
             # For the shape parameter the value provided by lmoments3 
             # is defined as negative as that obtained from other
             # packages in R, some textbooks, wikipedia,... ¿?
-            self.params["shape"]    = _params['c']
+            self.params["shape"]    = - _params['c']
             self.params["location"] = _params['loc']
             self.params["scale"]    = _params['scale']
         
