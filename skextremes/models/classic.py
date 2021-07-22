@@ -548,7 +548,7 @@ class GEV(_Base):
             for i, val in enumerate(sT2):
                 gradZ = [1, 
                          -(1 - sT[i] ** (-c)) / c,
-                         scale * sT[i] ** (-c) * (sT[i] ** c - c * _np.log(sT[i]) -1)]
+                         scale / c ** 2 * sT[i] ** (-c) * (sT[i] ** c - c * _np.log(sT[i]) -1)]
                          # PREVIOUSLY: scale * (c**-2) * (1 - sT[i] ** (-c)) - scale * (c**-1) * (sT[i]**-c) * _np.log(sT[i])]
                 se = _np.dot(_np.dot(gradZ, varcovar), _np.array(gradZ).T)
                 ci_Tu[i] = val + _st.norm.ppf((1 + self.ci) / 2) * _np.sqrt(se)
