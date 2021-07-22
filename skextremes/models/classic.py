@@ -448,7 +448,7 @@ class GEV(_Base):
             # For the shape parameter the value provided by scipy 
             # is defined as negative as that obtained from other
             # packages in R, some textbooks, wikipedia,... ¿?
-            self.params["shape"]    = - _params[0]  ###
+            self.params["shape"]    = - _params[0]
             self.params["location"] = _params[1]
             self.params["scale"]    = _params[2]
         
@@ -480,7 +480,8 @@ class GEV(_Base):
                                    scale = self.scale)
                                    
     def _nnlf(self, theta):
-        # This is used to calculate the variance-covariance matrix using the
+        # Returns the log-likelyhood function.
+        # It is used to calculate the variance-covariance matrix using the
         # Hessian from numdifftools
         # see self._ci_delta() method below
         # theta contains location, scale (, shape)
@@ -490,17 +491,17 @@ class GEV(_Base):
         # Here we provide code for the GEV distribution and for the special
         # case when shape parameter is 0 (Gumbel distribution).
         if len(theta) == 3:
-            loc = theta[0]      ###
-            scale = theta[1]    ###
-            c = theta[2]        ###
+            loc = theta[0]
+            scale = theta[1]
+            c = theta[2]
         if len(theta) == 2:
             loc = theta[0]
             scale = theta[1]
             c = 0
         if c != 0:
-            tmp = 1. + c * ((x - loc) / scale)  ###
-            expr = tmp[tmp > 0.]                ###
-            return (len(expr) * _np.log(scale) + 
+            tmp = 1. + c / scale * (x - loc)
+            expr = tmp[tmp > 0.]
+            return (len(expr) * _np.log(scale) +
                    (1. + 1. / c) * _np.sum(_np.log(expr)) +
                    _np.sum(expr ** (-1. / c)))
         else:
@@ -549,7 +550,6 @@ class GEV(_Base):
                 gradZ = [1, 
                          -(1 - sT[i] ** (-c)) / c,
                          scale / c ** 2 * sT[i] ** (-c) * (sT[i] ** c - c * _np.log(sT[i]) -1)]
-                         # PREVIOUSLY: scale * (c**-2) * (1 - sT[i] ** (-c)) - scale * (c**-1) * (sT[i]**-c) * _np.log(sT[i])]
                 se = _np.dot(_np.dot(gradZ, varcovar), _np.array(gradZ).T)
                 ci_Tu[i] = val + _st.norm.ppf((1 + self.ci) / 2) * _np.sqrt(se)
                 ci_Td[i] = val - _st.norm.ppf((1 + self.ci) / 2) * _np.sqrt(se)
