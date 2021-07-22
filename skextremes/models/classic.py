@@ -291,8 +291,8 @@ class _Base:
         
         # plot confidence intervals if available
         if self.ci:
-            #y1 = sT - st.norm.ppf(1 - self.ci / 2) * np.sqrt(self._ci_se)
-            #y2 = sT + st.norm.ppf(1 - self.ci / 2) * np.sqrt(self._ci_se)
+            #y1 = sT - st.norm.ppf((1 + self.ci) / 2) * np.sqrt(self._ci_se)
+            #y2 = sT + st.norm.ppf((1 + self.ci) / 2) * np.sqrt(self._ci_se)
             ax.semilogx(T, self._ci_Td, '--')
             ax.semilogx(T, self._ci_Tu, '--')
             ax.fill_between(T, self._ci_Td, self._ci_Tu, color = '0.75', alpha = 0.5)
@@ -354,8 +354,8 @@ class _Base:
         ax4.semilogx(T, sT, 'k')
         ax4.scatter(self.frec * Nmax/N, sorted(self.data)[::-1], color = 'orangered')
         if self.ci:
-            #y1 = sT - st.norm.ppf(1 - self.ci / 2) * np.sqrt(self._ci_se)
-            #y2 = sT + st.norm.ppf(1 - self.ci / 2) * np.sqrt(self._ci_se)
+            #y1 = sT - st.norm.ppf((1 + self.ci) / 2) * np.sqrt(self._ci_se)
+            #y2 = sT + st.norm.ppf((1 + self.ci) / 2) * np.sqrt(self._ci_se)
             ax4.semilogx(T, self._ci_Td, '--')
             ax4.semilogx(T, self._ci_Tu, '--')
             ax4.fill_between(T, self._ci_Td, self._ci_Tu, color = '0.75', alpha = 0.5)
@@ -378,8 +378,8 @@ class GEV(_Base):
         Availalable values are 'mle' (default value), 'mom' and 'lmoments'.
     ci : float (optional)
         Float indicating the value to be used for the calculation of the 
-        confidence interval. The returned values are (ci/2, 1-ci/2) 
-        percentile confidence intervals. E.g., a value of 0.05 will 
+        confidence interval. The returned values are ((1-ci)/2, (1+ci)/2) 
+        percentile confidence intervals. E.g., a value of 0.95 will 
         return confidence intervals at 0.025 and 0.975 percentiles.
     ci_method : str (optional)
         String indicating the method to be used to calculate the 
@@ -539,35 +539,35 @@ class GEV(_Base):
             self.params_ci = OrderedDict()
             se = _np.sqrt(_np.diag(varcovar))
             self._se = se
-            self.params_ci['shape']    = (self.c - _st.norm.ppf(1 - self.ci / 2) * se[0],
-                                          self.c + _st.norm.ppf(1 - self.ci / 2) * se[0])
-            self.params_ci['location'] = (self.loc - _st.norm.ppf(1 - self.ci / 2) * se[1],
-                                          self.loc + _st.norm.ppf(1 - self.ci / 2) * se[1])
-            self.params_ci['scale']    = (self.scale - _st.norm.ppf(1 - self.ci / 2) * se[2],
-                                          self.scale + _st.norm.ppf(1 - self.ci / 2) * se[2])
+            self.params_ci['shape']    = (self.c - _st.norm.ppf((1 + self.ci) / 2) * se[0],
+                                          self.c + _st.norm.ppf((1 + self.ci) / 2) * se[0])
+            self.params_ci['location'] = (self.loc - _st.norm.ppf((1 + self.ci) / 2) * se[1],
+                                          self.loc + _st.norm.ppf((1 + self.ci) / 2) * se[1])
+            self.params_ci['scale']    = (self.scale - _st.norm.ppf((1 + self.ci) / 2) * se[2],
+                                          self.scale + _st.norm.ppf((1 + self.ci) / 2) * se[2])
             for i, val in enumerate(sT2):
                 gradZ = [1, 
                          -(1 - sT[i] ** (-c)) / c,
                          scale * sT[i] ** (-c) * (sT[i] ** c - c * _np.log(sT[i]) -1)]
                          # PREVIOUSLY: scale * (c**-2) * (1 - sT[i] ** (-c)) - scale * (c**-1) * (sT[i]**-c) * _np.log(sT[i])]
                 se = _np.dot(_np.dot(gradZ, varcovar), _np.array(gradZ).T)
-                ci_Tu[i] = val + _st.norm.ppf(1 - self.ci / 2) * _np.sqrt(se)
-                ci_Td[i] = val - _st.norm.ppf(1 - self.ci / 2) * _np.sqrt(se)
+                ci_Tu[i] = val + _st.norm.ppf((1 + self.ci) / 2) * _np.sqrt(se)
+                ci_Td[i] = val - _st.norm.ppf((1 + self.ci) / 2) * _np.sqrt(se)
         else:         # else then we are calculating Gumbel confidence intervals
             varcovar = _np.linalg.inv(hess([loc, scale]))
             self.params_ci = OrderedDict()
             se = _np.sqrt(_np.diag(varcovar))
             self._se = se
             self.params_ci['shape']    = (0, 0)
-            self.params_ci['location'] = (self.loc - _st.norm.ppf(1 - self.ci / 2) * se[0],
-                                          self.loc + _st.norm.ppf(1 - self.ci / 2) * se[0])
-            self.params_ci['scale']    = (self.scale - _st.norm.ppf(1 - self.ci / 2) * se[1],
-                                          self.scale + _st.norm.ppf(1 - self.ci / 2) * se[1])
+            self.params_ci['location'] = (self.loc - _st.norm.ppf((1 + self.ci) / 2) * se[0],
+                                          self.loc + _st.norm.ppf((1 + self.ci) / 2) * se[0])
+            self.params_ci['scale']    = (self.scale - _st.norm.ppf((1 + self.ci) / 2) * se[1],
+                                          self.scale + _st.norm.ppf((1 + self.ci) / 2) * se[1])
             for i, val in enumerate(sT2):
                 gradZ = [1, -_np.log(sT[i])]
                 se = _np.dot(_np.dot(gradZ, varcovar), _np.array(gradZ).T)
-                ci_Tu[i] = val + _st.norm.ppf(1 - self.ci / 2) * _np.sqrt(se)
-                ci_Td[i] = val - _st.norm.ppf(1 - self.ci / 2) * _np.sqrt(se)
+                ci_Tu[i] = val + _st.norm.ppf((1 + self.ci) / 2) * _np.sqrt(se)
+                ci_Td[i] = val - _st.norm.ppf((1 + self.ci) / 2) * _np.sqrt(se)
         self._ci_Tu = ci_Tu
         self._ci_Td = ci_Td
         self.varcovar = varcovar
