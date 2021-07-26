@@ -279,7 +279,7 @@ class _Base:
         fig, ax = _plt.subplots(figsize=(8, 6))
         
         # data
-        T = _np.arange(1., 500.1, 0.1)
+        T = _np.arange(1.1, 500.1, 0.1)
         sT = self.distr.isf(self.frec * 1./T)
         N = _np.r_[1:len(self.data)+1] * self.frec
         Nmax = max(N)
@@ -344,7 +344,7 @@ class _Base:
         ax3 = self._plot(ax3, 'Q-Q Plot', 'model', 'empirical')
         
         # Return levels plot
-        T = _np.arange(1., 500.1, 0.1)
+        T = _np.arange(1.1, 500.1, 0.1)
         sT = self.distr.isf(self.frec/T)
         N = _np.r_[1:len(self.data)+1] * self.frec
         Nmax=max(N)
@@ -527,7 +527,7 @@ class GEV(_Base):
         loc = self.loc
         scale = self.scale
         hess = _ndt.Hessian(self._nnlf)
-        T = _np.arange(1., 500.1, 0.1)
+        T = _np.arange(1.1, 500.1, 0.1)
         sT = -_np.log(1.-self.frec/T)
         sT2 = self.distr.isf(self.frec/T)
         
@@ -597,7 +597,7 @@ class GEV(_Base):
                                               loc = self.loc, 
                                               scale = self.scale,
                                               optimizer = _op.fmin_bfgs)
-            T = _np.arange(1., 500.1, 0.1)
+            T = _np.arange(1.1, 500.1, 0.1)
             sT = _st.genextreme.isf(self.frec/T, c, loc = loc, scale = scale)
             res = [c, loc, scale]
             res.extend(sT.tolist())
